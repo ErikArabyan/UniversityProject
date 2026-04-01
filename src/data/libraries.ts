@@ -42,7 +42,15 @@ ${script}
 function createD3Lesson(width: number, height: number, script: string) {
 	return createLessonHtml({
 		scripts: ['https://d3js.org/d3.v7.min.js'],
-		body: `<svg id="chart" width="${width}" height="${height}"></svg>`,
+		styles: `html, body { margin: 0; min-height: 100%; background: radial-gradient(circle at top, #1e293b 0%, #0f172a 55%, #020617 100%); color: #e2e8f0; font-family: Inter, system-ui, sans-serif; }
+body { display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; }
+.chart-shell { width: fit-content; padding: 16px; background: rgba(15, 23, 42, 0.82); border: 1px solid rgba(148, 163, 184, 0.18); border-radius: 20px; box-shadow: 0 20px 45px rgba(2, 6, 23, 0.35); }
+svg { display: block; overflow: visible; background: linear-gradient(180deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)); border-radius: 14px; }
+.axis text { fill: #cbd5e1; font-size: 12px; }
+.axis path, .axis line { stroke: #475569; }
+.grid line { stroke: rgba(148, 163, 184, 0.16); }
+.grid path { stroke-width: 0; }`,
+		body: `<div class="chart-shell"><svg id="chart" width="${width}" height="${height}"></svg></div>`,
 		script,
 	});
 }
@@ -50,8 +58,11 @@ function createD3Lesson(width: number, height: number, script: string) {
 function createChartJsLesson(width: number, script: string) {
 	return createLessonHtml({
 		scripts: ['https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js'],
-		styles: 'body { background: #1a1b26; color: white; }',
-		body: `<div style="width: ${width}px;"><canvas id="myChart"></canvas></div>`,
+		styles: `html, body { margin: 0; min-height: 100%; background: radial-gradient(circle at top, #1e293b 0%, #0f172a 55%, #020617 100%); color: #e2e8f0; font-family: Inter, system-ui, sans-serif; }
+body { display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; }
+.chart-shell { width: ${width}px; padding: 16px; background: rgba(15, 23, 42, 0.82); border: 1px solid rgba(148, 163, 184, 0.18); border-radius: 20px; box-shadow: 0 20px 45px rgba(2, 6, 23, 0.35); }
+canvas { display: block; }`,
+		body: `<div class="chart-shell"><canvas id="myChart"></canvas></div>`,
 		script,
 	});
 }
@@ -59,7 +70,11 @@ function createChartJsLesson(width: number, script: string) {
 function createHighchartsLesson(script: string, modules: string[] = []) {
 	return createLessonHtml({
 		scripts: ['https://cdn.jsdelivr.net/npm/highcharts/highcharts.js', ...modules.map((module) => `https://cdn.jsdelivr.net/npm/highcharts/modules/${module}.js`), 'https://cdn.jsdelivr.net/npm/highcharts/themes/dark-unica.js'],
-		body: '<div id="container" style="min-width: 310px; height: 300px;"></div>',
+		styles: `html, body { margin: 0; min-height: 100%; background: radial-gradient(circle at top, #1e293b 0%, #0f172a 55%, #020617 100%); color: #e2e8f0; font-family: Inter, system-ui, sans-serif; }
+body { display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; }
+.chart-shell { width: min(720px, 100%); padding: 16px; background: rgba(15, 23, 42, 0.82); border: 1px solid rgba(148, 163, 184, 0.18); border-radius: 20px; box-shadow: 0 20px 45px rgba(2, 6, 23, 0.35); }
+#container { min-width: 0 !important; width: 100%; height: 320px; }`,
+		body: '<div class="chart-shell"><div id="container"></div></div>',
 		script,
 	});
 }
@@ -90,28 +105,56 @@ Let's draw a simple bar chart. Look at the code to see how we define scales and 
 				initialCode: createD3Lesson(
 					400,
 					300,
-					`  const data = [30, 86, 168, 281, 303, 365];
-  const svg = d3.select("#chart");
-  const width = 400, height = 300;
+					`  const data = [
+    { label: 'Jan', value: 30 },
+    { label: 'Feb', value: 86 },
+    { label: 'Mar', value: 168 },
+    { label: 'Apr', value: 281 },
+    { label: 'May', value: 303 },
+    { label: 'Jun', value: 365 }
+  ];
+  const margin = { top: 24, right: 24, bottom: 40, left: 44 };
+  const width = 400 - margin.left - margin.right;
+  const height = 300 - margin.top - margin.bottom;
+  
+  const svg = d3
+    .select('#chart')
+    .append('g')
+    .attr('transform', \`translate(\${margin.left},\${margin.top})\`);
   
   const xScale = d3.scaleBand()
-    .domain(d3.range(data.length))
+    .domain(data.map((d) => d.label))
     .range([0, width])
-    .padding(0.1);
+    .padding(0.18);
     
   const yScale = d3.scaleLinear()
-    .domain([0, d3.max(data)])
+    .domain([0, d3.max(data, (d) => d.value)])
+    .nice()
     .range([height, 0]);
+
+  svg.append('g')
+    .attr('class', 'grid')
+    .call(d3.axisLeft(yScale).ticks(5).tickSize(-width).tickFormat(() => ''));
+
+  svg.append('g')
+    .attr('class', 'axis')
+    .call(d3.axisLeft(yScale).ticks(5));
+
+  svg.append('g')
+    .attr('class', 'axis')
+    .attr('transform', \`translate(0,\${height})\`)
+    .call(d3.axisBottom(xScale));
     
-  svg.selectAll("rect")
+  svg.selectAll('rect')
     .data(data)
     .enter()
-    .append("rect")
-    .attr("x", (d, i) => xScale(i))
-    .attr("y", d => yScale(d))
-    .attr("width", xScale.bandwidth())
-    .attr("height", d => height - yScale(d))
-    .attr("fill", "#4F46E5");`,
+    .append('rect')
+    .attr('x', (d) => xScale(d.label))
+    .attr('y', (d) => yScale(d.value))
+    .attr('width', xScale.bandwidth())
+    .attr('height', (d) => height - yScale(d.value))
+    .attr('rx', 8)
+    .attr('fill', '#4F46E5');`,
 				),
 			},
 			{
@@ -143,11 +186,17 @@ A chart isn't very useful without context. D3 provides axis generators.
   const yScale = d3.scaleLinear().domain([0, d3.max(data)]).range([height, 0]);
     
   svg.append("g")
+    .attr("class", "grid")
+    .call(d3.axisLeft(yScale).ticks(6).tickSize(-width).tickFormat(() => ""));
+
+  svg.append("g")
+    .attr("class", "axis")
+    .call(d3.axisLeft(yScale).ticks(6));
+
+  svg.append("g")
+    .attr("class", "axis")
     .attr("transform", \`translate(0,\${height})\`)
     .call(d3.axisBottom(xScale));
-    
-  svg.append("g")
-    .call(d3.axisLeft(yScale));
 
   svg.selectAll(".bar").data(data).enter().append("rect")
     .attr("class", "bar")
@@ -155,7 +204,8 @@ A chart isn't very useful without context. D3 provides axis generators.
     .attr("y", d => yScale(d))
     .attr("width", xScale.bandwidth())
     .attr("height", d => height - yScale(d))
-    .attr("fill", "#10B981");`,
+    .attr("fill", "#10B981")
+    .attr("rx", 8);`,
 				),
 			},
 			{
@@ -175,22 +225,52 @@ Line charts show continuity. In SVG, lines are drawn using the \`<path>\` elemen
 					400,
 					300,
 					`  const data = [{x: 0, y: 10}, {x: 1, y: 50}, {x: 2, y: 30}, {x: 3, y: 90}, {x: 4, y: 40}];
-  const svg = d3.select("#chart");
-  const width = 400, height = 300;
+  const margin = { top: 24, right: 24, bottom: 40, left: 44 };
+  const width = 400 - margin.left - margin.right;
+  const height = 300 - margin.top - margin.bottom;
+
+  const svg = d3
+    .select("#chart")
+    .append("g")
+    .attr("transform", \`translate(\${margin.left},\${margin.top})\`);
   
-  const xScale = d3.scaleLinear().domain([0, 4]).range([0, width]);
-  const yScale = d3.scaleLinear().domain([0, 100]).range([height, 0]);
+  const xScale = d3.scaleLinear().domain(d3.extent(data, (d) => d.x)).nice().range([0, width]);
+  const yScale = d3.scaleLinear().domain([0, d3.max(data, (d) => d.y)]).nice().range([height, 0]);
   
+  svg.append("g")
+    .attr("class", "grid")
+    .call(d3.axisLeft(yScale).ticks(5).tickSize(-width).tickFormat(() => ""));
+
+  svg.append("g")
+    .attr("class", "axis")
+    .call(d3.axisLeft(yScale).ticks(5));
+
+  svg.append("g")
+    .attr("class", "axis")
+    .attr("transform", \`translate(0,\${height})\`)
+    .call(d3.axisBottom(xScale).ticks(5).tickFormat(d3.format("d")));
+
   const line = d3.line()
-    .x(d => xScale(d.x))
-    .y(d => yScale(d.y));
+    .x((d) => xScale(d.x))
+    .y((d) => yScale(d.y));
     
   svg.append("path")
     .datum(data)
     .attr("fill", "none")
     .attr("stroke", "#8B5CF6")
     .attr("stroke-width", 3)
-    .attr("d", line);`,
+    .attr("d", line);
+
+  svg.selectAll("circle")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", (d) => xScale(d.x))
+    .attr("cy", (d) => yScale(d.y))
+    .attr("r", 5)
+    .attr("fill", "#c4b5fd")
+    .attr("stroke", "#0f172a")
+    .attr("stroke-width", 2);`,
 				),
 			},
 			{
@@ -209,23 +289,53 @@ D3 makes transitions incredibly easy.
 				initialCode: createD3Lesson(
 					400,
 					300,
-					`  const data = [30, 86, 168, 281];
-  const svg = d3.select("#chart");
-  const xScale = d3.scaleBand().domain(d3.range(data.length)).range([0, 400]).padding(0.1);
-  const yScale = d3.scaleLinear().domain([0, 300]).range([300, 0]);
+					`  const data = [
+    { label: 'Q1', value: 30 },
+    { label: 'Q2', value: 86 },
+    { label: 'Q3', value: 168 },
+    { label: 'Q4', value: 281 }
+  ];
+  const margin = { top: 24, right: 24, bottom: 40, left: 44 };
+  const width = 400 - margin.left - margin.right;
+  const height = 300 - margin.top - margin.bottom;
+
+  const svg = d3
+    .select("#chart")
+    .append("g")
+    .attr("transform", \`translate(\${margin.left},\${margin.top})\`);
+
+  const xScale = d3.scaleBand()
+    .domain(data.map((d) => d.label))
+    .range([0, width])
+    .padding(0.18);
+  const yScale = d3.scaleLinear().domain([0, d3.max(data, (d) => d.value)]).nice().range([height, 0]);
+
+  svg.append("g")
+    .attr("class", "grid")
+    .call(d3.axisLeft(yScale).ticks(5).tickSize(-width).tickFormat(() => ""));
+
+  svg.append("g")
+    .attr("class", "axis")
+    .call(d3.axisLeft(yScale).ticks(5));
+
+  svg.append("g")
+    .attr("class", "axis")
+    .attr("transform", \`translate(0,\${height})\`)
+    .call(d3.axisBottom(xScale));
   
   const bars = svg.selectAll("rect").data(data).enter().append("rect")
-    .attr("x", (d, i) => xScale(i))
-    .attr("y", 300)
+    .attr("x", (d) => xScale(d.label))
+    .attr("y", height)
     .attr("width", xScale.bandwidth())
     .attr("height", 0)
+    .attr("rx", 8)
     .attr("fill", "#EF4444");
     
   bars.transition()
     .duration(1000)
     .delay((d, i) => i * 200)
-    .attr("y", d => yScale(d))
-    .attr("height", d => 300 - yScale(d));`,
+    .attr("y", (d) => yScale(d.value))
+    .attr("height", (d) => height - yScale(d.value));`,
 				),
 			},
 			{
@@ -248,15 +358,38 @@ Scatter plots use SVG \`<circle>\` elements instead of rects or paths.
     {x: 30, y: 40}, {x: 120, y: 110}, {x: 250, y: 90}, 
     {x: 320, y: 210}, {x: 150, y: 250}, {x: 280, y: 160}
   ];
-  const svg = d3.select("#chart");
+  const margin = { top: 24, right: 24, bottom: 40, left: 44 };
+  const width = 400 - margin.left - margin.right;
+  const height = 300 - margin.top - margin.bottom;
+
+  const svg = d3
+    .select("#chart")
+    .append("g")
+    .attr("transform", \`translate(\${margin.left},\${margin.top})\`);
+  
+  const xScale = d3.scaleLinear().domain([0, d3.max(data, (d) => d.x) + 20]).nice().range([0, width]);
+  const yScale = d3.scaleLinear().domain([0, d3.max(data, (d) => d.y) + 20]).nice().range([height, 0]);
+
+  svg.append("g")
+    .attr("class", "grid")
+    .call(d3.axisLeft(yScale).ticks(5).tickSize(-width).tickFormat(() => ""));
+
+  svg.append("g")
+    .attr("class", "axis")
+    .call(d3.axisLeft(yScale).ticks(5));
+
+  svg.append("g")
+    .attr("class", "axis")
+    .attr("transform", \`translate(0,\${height})\`)
+    .call(d3.axisBottom(xScale).ticks(5));
   
   svg.selectAll("circle")
     .data(data).enter().append("circle")
-    .attr("cx", d => d.x)
-    .attr("cy", d => d.y)
+    .attr("cx", (d) => xScale(d.x))
+    .attr("cy", (d) => yScale(d.y))
     .attr("r", 8)
     .attr("fill", "#06B6D4")
-    .attr("opacity", 0.7)
+    .attr("opacity", 0.75)
     .attr("stroke", "#fff")
     .attr("stroke-width", 2);`,
 				),

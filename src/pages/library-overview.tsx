@@ -74,7 +74,7 @@ export default function LibraryOverview() {
 			</div>
 
 			<div className='space-y-6'>
-				<h2 className='text-2xl font-bold tracking-tight'>Curriculum</h2>
+				<h2 className='text-2xl font-bold tracking-tight'>Ուսումնական պլան</h2>
 				<motion.div variants={container} initial='hidden' animate='show' className='space-y-4'>
 					{library.lessons.map((lesson, idx) => {
 						const completed = isCompleted(library.id, lesson.id);

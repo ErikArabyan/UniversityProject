@@ -80,8 +80,8 @@ export default function Lesson() {
 	const lesson = getLesson(libId || '', lessonId || '');
 	const { markCompleted, isCompleted } = useProgress();
 
-	const [code, setCode] = useState('');
-	const [outputCode, setOutputCode] = useState('');
+	const [code, setCode] = useState(() => lesson?.initialCode ?? '');
+	const [outputCode, setOutputCode] = useState(() => lesson?.initialCode ?? '');
 	const [activeTab, setActiveTab] = useState<'theory' | 'editor' | 'preview'>('editor');
 
 	useEffect(() => {
@@ -119,9 +119,10 @@ export default function Lesson() {
 	};
 
 	const previewDocument = injectPreviewErrorOverlay(outputCode);
+	const previewKey = `${library.id}-${lesson.id}-${outputCode.length}`;
 
 	return (
-		<div className='h-[calc(100vh-64px)] md:h-screen flex flex-col md:flex-row overflow-hidden bg-background'>
+		<div className='flex h-full flex-col overflow-hidden bg-background md:flex-row'>
 			<div className='md:hidden flex p-2 bg-card border-b border-border space-x-2 shrink-0'>
 				{(['theory', 'editor', 'preview'] as const).map((tab) => (
 					<button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-2 text-sm font-medium rounded-md capitalize transition-colors ${activeTab === tab ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary'}`}>
@@ -144,7 +145,7 @@ export default function Lesson() {
 					</div>
 				</div>
 
-				<div className='p-6 bg-secondary/30 border-t border-border mt-8'>
+				<div className='fixed bottom-0 md:w-1/3 lg:w-[30%] p-6 bg-secondary/30 border-t border-border'>
 					<button
 						onClick={handleComplete}
 						className='w-full py-3 px-4 rounded-xl flex items-center justify-center space-x-2 font-semibold transition-all duration-200 shadow-sm
@@ -192,14 +193,14 @@ export default function Lesson() {
 				</div>
 			</div>
 
-			<div className={`md:flex flex-col w-full md:w-1/3 lg:w-[35%] bg-white ${activeTab === 'preview' ? 'flex' : 'hidden'}`}>
+			<div className={`md:flex flex-col w-full h-full md:w-1/3 lg:w-[35%] bg-white ${activeTab === 'preview' ? 'flex' : 'hidden'}`}>
 				<div className='px-4 py-3 bg-gray-100 border-b border-gray-200 shrink-0 flex items-center space-x-3 text-sm text-gray-500 font-mono'>
 					<div className='px-2 py-1 bg-white border border-gray-200 rounded flex-1 flex items-center shadow-sm'>
 						<span className='text-gray-400 mr-2'>localhost:3000</span>
 					</div>
 				</div>
-				<div className='flex-1 w-full bg-white relative'>
-					<iframe title='Live Preview' srcDoc={previewDocument} sandbox='allow-scripts allow-modals' className='absolute inset-0 w-full h-full border-none' />
+				<div className='flex-1 w-full h-full bg-white relative'>
+					<iframe key={previewKey} title='Live Preview' srcDoc={previewDocument} sandbox='allow-scripts allow-modals' className='absolute inset-0 w-full h-full border-none' />
 				</div>
 			</div>
 		</div>

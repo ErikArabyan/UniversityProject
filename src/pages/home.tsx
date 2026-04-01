@@ -88,6 +88,18 @@ export default function Home() {
 						);
 					})}
 				</motion.div>
+				<div className='text-center max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28'>
+					<p>
+						<h1 className='text-4xl md:text-6xl font-bold tracking-tight text-indigo-400 mb-8'>Վեբկայքի արդիականությունը</h1>
+						<p className='text-lg md:text-xl text-muted-foreground leading-relaxed'>Տվյալների ծավալների աճը պահանջում է դրանց պարզ և հասկանալի ներկայացում, ինչի համար տվյալների վիզուալիզացիան դարձել է կարևոր գործիք։ Այս աշխատանքի նպատակն է ստեղծել ինտերակտիվ ուսուցողական վեբ կայք՝ JavaScript գրադարանների միջոցով, որը կօգնի արդյունավետ սովորել տվյալների վիզուալիզացիա։ Աշխատանքը կարևոր է, քանի որ՝</p>
+						<ul className='text-lg md:text-xl text-muted-foreground leading-relaxed'>
+							<li>բարելավում է ՏՏ կրթությունը,</li>
+							<li>ապահովում է գործնական ուսուցում,</li>
+							<li>նպաստում է ժամանակակից վեբ տեխնոլոգիաների կիրառմանը։</li>
+						</ul>
+						<p className='text-lg md:text-xl text-muted-foreground leading-relaxed'>Այն օգտակար է ուսանողների, դասախոսների, ծրագրավորողների և կազմակերպությունների համար։</p>
+					</p>
+				</div>
 			</div>
 		</div>
 	);

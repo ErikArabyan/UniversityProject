@@ -3,9 +3,9 @@ import { Sidebar } from './layout/sidebar';
 
 export function Layout({ children }: { children: ReactNode }) {
 	return (
-		<div className='flex h-screen bg-background text-foreground overflow-hidden'>
+		<div className='flex h-screen flex-col bg-background text-foreground overflow-hidden'>
 			<Sidebar />
-			<main className='flex-1 relative h-full overflow-y-auto overflow-x-hidden focus:outline-none'>{children}</main>
+			<main className='relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden focus:outline-none'>{children}</main>
 		</div>
 	);
 }
