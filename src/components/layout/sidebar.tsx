@@ -3,7 +3,7 @@ import { Link, useLocation } from 'wouter';
 import { libraries } from '@/data/libraries';
 import { useProgress } from '@/hooks/use-progress';
 import { cn } from '@/lib/utils';
-import { BarChart3, ChevronDown, CheckCircle2, Circle, Home, Menu, Rocket, X } from 'lucide-react';
+import { ChevronDown, CheckCircle2, Circle, Home, Menu, Rocket, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function Sidebar() {

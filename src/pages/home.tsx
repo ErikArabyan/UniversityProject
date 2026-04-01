@@ -25,7 +25,7 @@ export default function Home() {
 		<div className='min-h-screen pb-20'>
 			<div className='relative overflow-hidden bg-card border-b border-border'>
 				<div className='absolute inset-0 opacity-20 mix-blend-screen pointer-events-none'>
-					<img src={'images/hero-bg.png'} alt='Hero background pattern' className='w-full h-full object-cover' />
+					<img src={'images/hero-bg.webp'} alt='Hero background pattern' className='w-full h-full object-cover' />
 					<div className='absolute inset-0 bg-linear-to-b from-transparent to-card'></div>
 				</div>
 
