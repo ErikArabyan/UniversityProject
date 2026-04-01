@@ -1,15 +1,10 @@
 import { Switch, Route, Router as WouterRouter } from 'wouter';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Toaster } from '@/components/ui/toaster';
-import { TooltipProvider } from '@/components/ui/tooltip';
 import { Layout } from '@/components/layout';
 
 import Home from '@/pages/home';
 import LibraryOverview from '@/pages/library-overview';
 import Lesson from '@/pages/lesson';
 import NotFound from '@/pages/not-found';
-
-const queryClient = new QueryClient();
 
 function Router() {
 	return (
@@ -26,14 +21,9 @@ function Router() {
 
 function App() {
 	return (
-		<QueryClientProvider client={queryClient}>
-			<TooltipProvider>
-				<WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-					<Router />
-				</WouterRouter>
-				<Toaster />
-			</TooltipProvider>
-		</QueryClientProvider>
+		<WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+			<Router />
+		</WouterRouter>
 	);
 }
 
