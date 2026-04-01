@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useLocation } from 'wouter';
 import { getLibrary, getLesson } from '@/data/libraries';
 import { useProgress } from '@/hooks/use-progress';
@@ -10,6 +10,68 @@ import 'prismjs/components/prism-css';
 import ReactMarkdown from 'react-markdown';
 import { Play, RotateCcw, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+function injectPreviewErrorOverlay(documentHtml: string) {
+	const errorScript = `<script>
+(() => {
+  const renderError = (title, detail) => {
+    const mount = () => {
+      let node = document.getElementById('__preview_error__');
+      if (!node) {
+        node = document.createElement('div');
+        node.id = '__preview_error__';
+        node.style.position = 'fixed';
+        node.style.left = '12px';
+        node.style.right = '12px';
+        node.style.bottom = '12px';
+        node.style.zIndex = '2147483647';
+        node.style.padding = '12px 14px';
+        node.style.borderRadius = '12px';
+        node.style.background = 'rgba(127, 29, 29, 0.96)';
+        node.style.color = '#fff';
+        node.style.fontFamily = 'ui-monospace, SFMono-Regular, Menlo, monospace';
+        node.style.fontSize = '12px';
+        node.style.lineHeight = '1.5';
+        node.style.whiteSpace = 'pre-wrap';
+        node.style.boxShadow = '0 10px 30px rgba(0,0,0,0.35)';
+        (document.body || document.documentElement).appendChild(node);
+      }
+      node.textContent = title + '\\n\\n' + detail;
+    };
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', mount, { once: true });
+      return;
+    }
+
+    mount();
+  };
+
+  window.addEventListener('error', (event) => {
+    const detail = event.error && event.error.stack
+      ? event.error.stack
+      : [event.message, event.filename, event.lineno, event.colno].filter(Boolean).join(' | ');
+    renderError('Preview error', detail || 'Unknown error');
+  });
+
+  window.addEventListener('unhandledrejection', (event) => {
+    const reason = event.reason;
+    const detail = reason && reason.stack ? reason.stack : String(reason);
+    renderError('Unhandled promise rejection', detail);
+  });
+})();
+</script>`;
+
+	if (documentHtml.includes('</head>')) {
+		return documentHtml.replace('</head>', `${errorScript}</head>`);
+	}
+
+	if (documentHtml.includes('<body>')) {
+		return documentHtml.replace('<body>', `<body>${errorScript}`);
+	}
+
+	return `${errorScript}${documentHtml}`;
+}
 
 export default function Lesson() {
 	const { libId, lessonId } = useParams<'/lesson/:libId/:lessonId'>();
@@ -55,6 +117,8 @@ export default function Lesson() {
 			setLocation(`/library/${library.id}`);
 		}
 	};
+
+	const previewDocument = injectPreviewErrorOverlay(outputCode);
 
 	return (
 		<div className='h-[calc(100vh-64px)] md:h-screen flex flex-col md:flex-row overflow-hidden bg-background'>
@@ -135,7 +199,7 @@ export default function Lesson() {
 					</div>
 				</div>
 				<div className='flex-1 w-full bg-white relative'>
-					<iframe title='Live Preview' srcDoc={outputCode} sandbox='allow-scripts allow-modals' className='absolute inset-0 w-full h-full border-none' />
+					<iframe title='Live Preview' srcDoc={previewDocument} sandbox='allow-scripts allow-modals' className='absolute inset-0 w-full h-full border-none' />
 				</div>
 			</div>
 		</div>

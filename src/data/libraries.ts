@@ -15,6 +15,55 @@ export interface Library {
 	lessons: Lesson[];
 }
 
+type LessonHtmlOptions = {
+	body: string;
+	script: string;
+	scripts?: string[];
+	styles?: string;
+};
+
+function createLessonHtml({ body, script, scripts = [], styles }: LessonHtmlOptions) {
+	const headContent = [...scripts.map((src) => `  <script src="${src}"></script>`), styles ? `  <style>${styles}</style>` : null].filter(Boolean).join('\n');
+
+	return `<!DOCTYPE html>
+<html>
+<head>
+${headContent}
+</head>
+<body>
+${body}
+<script>
+${script}
+</script>
+</body>
+</html>`;
+}
+
+function createD3Lesson(width: number, height: number, script: string) {
+	return createLessonHtml({
+		scripts: ['https://d3js.org/d3.v7.min.js'],
+		body: `<svg id="chart" width="${width}" height="${height}"></svg>`,
+		script,
+	});
+}
+
+function createChartJsLesson(width: number, script: string) {
+	return createLessonHtml({
+		scripts: ['https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js'],
+		styles: 'body { background: #1a1b26; color: white; }',
+		body: `<div style="width: ${width}px;"><canvas id="myChart"></canvas></div>`,
+		script,
+	});
+}
+
+function createHighchartsLesson(script: string, modules: string[] = []) {
+	return createLessonHtml({
+		scripts: ['https://cdn.jsdelivr.net/npm/highcharts/highcharts.js', ...modules.map((module) => `https://cdn.jsdelivr.net/npm/highcharts/modules/${module}.js`), 'https://cdn.jsdelivr.net/npm/highcharts/themes/dark-unica.js'],
+		body: '<div id="container" style="min-width: 310px; height: 300px;"></div>',
+		script,
+	});
+}
+
 export const libraries: Library[] = [
 	{
 		id: 'd3js',
@@ -38,15 +87,10 @@ D3 (Data-Driven Documents) is a powerful JavaScript library for producing dynami
 
 Let's draw a simple bar chart. Look at the code to see how we define scales and append \`<rect>\` elements.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-</head>
-<body>
-<svg id="chart" width="400" height="300"></svg>
-<script>
-  const data = [30, 86, 168, 281, 303, 365];
+				initialCode: createD3Lesson(
+					400,
+					300,
+					`  const data = [30, 86, 168, 281, 303, 365];
   const svg = d3.select("#chart");
   const width = 400, height = 300;
   
@@ -67,10 +111,8 @@ Let's draw a simple bar chart. Look at the code to see how we define scales and 
     .attr("y", d => yScale(d))
     .attr("width", xScale.bandwidth())
     .attr("height", d => height - yScale(d))
-    .attr("fill", "#4F46E5");
-</script>
-</body>
-</html>`,
+    .attr("fill", "#4F46E5");`,
+				),
 			},
 			{
 				id: '2',
@@ -85,15 +127,10 @@ A chart isn't very useful without context. D3 provides axis generators.
 * **Margins:** Always leave space for axes by using a margin convention.
 * **Groups (<g>):** D3 uses SVG groups to translate (move) whole sections of elements at once.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-</head>
-<body>
-<svg id="chart" width="450" height="350"></svg>
-<script>
-  const data = [30, 86, 168, 281, 303];
+				initialCode: createD3Lesson(
+					450,
+					350,
+					`  const data = [30, 86, 168, 281, 303];
   const margin = {top: 20, right: 20, bottom: 30, left: 40};
   const width = 450 - margin.left - margin.right;
   const height = 350 - margin.top - margin.bottom;
@@ -118,10 +155,8 @@ A chart isn't very useful without context. D3 provides axis generators.
     .attr("y", d => yScale(d))
     .attr("width", xScale.bandwidth())
     .attr("height", d => height - yScale(d))
-    .attr("fill", "#10B981");
-</script>
-</body>
-</html>`,
+    .attr("fill", "#10B981");`,
+				),
 			},
 			{
 				id: '3',
@@ -136,15 +171,10 @@ Line charts show continuity. In SVG, lines are drawn using the \`<path>\` elemen
 * **Path 'd' attribute:** The instructions for drawing the path.
 * **Fill & Stroke:** For lines, we typically set \`fill: none\` and \`stroke\` to a color.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-</head>
-<body>
-<svg id="chart" width="400" height="300"></svg>
-<script>
-  const data = [{x: 0, y: 10}, {x: 1, y: 50}, {x: 2, y: 30}, {x: 3, y: 90}, {x: 4, y: 40}];
+				initialCode: createD3Lesson(
+					400,
+					300,
+					`  const data = [{x: 0, y: 10}, {x: 1, y: 50}, {x: 2, y: 30}, {x: 3, y: 90}, {x: 4, y: 40}];
   const svg = d3.select("#chart");
   const width = 400, height = 300;
   
@@ -160,15 +190,13 @@ Line charts show continuity. In SVG, lines are drawn using the \`<path>\` elemen
     .attr("fill", "none")
     .attr("stroke", "#8B5CF6")
     .attr("stroke-width", 3)
-    .attr("d", line);
-</script>
-</body>
-</html>`,
+    .attr("d", line);`,
+				),
 			},
 			{
 				id: '4',
-				title: 'Transitions & Animation',
-				description: 'Bring your charts to life with movement.',
+				title: 'Անցումներ և անիմացիաներ',
+				description: 'Գեղեցկացրեք ձեր գրաֆիկները շարժման միջոցով:',
 				theory: `
 # Animations
 D3 makes transitions incredibly easy.
@@ -178,15 +206,10 @@ D3 makes transitions incredibly easy.
 * **.duration():** How long the animation lasts in milliseconds.
 * **.delay():** Pause before starting.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-</head>
-<body>
-<svg id="chart" width="400" height="300"></svg>
-<script>
-  const data = [30, 86, 168, 281];
+				initialCode: createD3Lesson(
+					400,
+					300,
+					`  const data = [30, 86, 168, 281];
   const svg = d3.select("#chart");
   const xScale = d3.scaleBand().domain(d3.range(data.length)).range([0, 400]).padding(0.1);
   const yScale = d3.scaleLinear().domain([0, 300]).range([300, 0]);
@@ -202,15 +225,13 @@ D3 makes transitions incredibly easy.
     .duration(1000)
     .delay((d, i) => i * 200)
     .attr("y", d => yScale(d))
-    .attr("height", d => 300 - yScale(d));
-</script>
-</body>
-</html>`,
+    .attr("height", d => 300 - yScale(d));`,
+				),
 			},
 			{
 				id: '5',
-				title: 'Scatter Plots',
-				description: 'Plot points on an X/Y plane to show correlations.',
+				title: 'Կետային գծապատկերներ',
+				description: 'Կիրառեք կետերը X/Y հարթության վրա՝ փոխկապակցվածությունը ցույց տալու համար:',
 				theory: `
 # Scatter Plots
 Scatter plots use SVG \`<circle>\` elements instead of rects or paths.
@@ -220,15 +241,10 @@ Scatter plots use SVG \`<circle>\` elements instead of rects or paths.
 * **r:** The radius of the circle.
 * **opacity:** Useful when circles overlap.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-</head>
-<body>
-<svg id="chart" width="400" height="300"></svg>
-<script>
-  const data = [
+				initialCode: createD3Lesson(
+					400,
+					300,
+					`  const data = [
     {x: 30, y: 40}, {x: 120, y: 110}, {x: 250, y: 90}, 
     {x: 320, y: 210}, {x: 150, y: 250}, {x: 280, y: 160}
   ];
@@ -242,10 +258,8 @@ Scatter plots use SVG \`<circle>\` elements instead of rects or paths.
     .attr("fill", "#06B6D4")
     .attr("opacity", 0.7)
     .attr("stroke", "#fff")
-    .attr("stroke-width", 2);
-</script>
-</body>
-</html>`,
+    .attr("stroke-width", 2);`,
+				),
 			},
 		],
 	},
@@ -258,8 +272,8 @@ Scatter plots use SVG \`<circle>\` elements instead of rects or paths.
 		lessons: [
 			{
 				id: '1',
-				title: 'Getting Started with Chart.js',
-				description: 'Create your first chart in minutes.',
+				title: 'Սկսել Chart.js-ից',
+				description: 'Ստեղծեք ձեր առաջին գրաֆիկը հաշված րոպեների ընթացքում:',
 				theory: `
 # Welcome to Chart.js
 Chart.js is a fantastic canvas-based library. It's incredibly easy to set up.
@@ -269,16 +283,9 @@ Chart.js is a fantastic canvas-based library. It's incredibly easy to set up.
 * **Config Object:** Everything is defined in a single configuration object passed to \`new Chart()\`.
 * **Type:** Defines the chart style (bar, line, pie, etc).
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style> body { background: #1a1b26; color: white; } </style>
-</head>
-<body>
-<div style="width: 400px;"><canvas id="myChart"></canvas></div>
-<script>
-  const ctx = document.getElementById('myChart').getContext('2d');
+				initialCode: createChartJsLesson(
+					400,
+					`  const ctx = document.getElementById('myChart').getContext('2d');
   
   Chart.defaults.color = '#fff';
   
@@ -292,15 +299,13 @@ Chart.js is a fantastic canvas-based library. It's incredibly easy to set up.
         backgroundColor: ['#4F46E5','#7C3AED','#2563EB','#0891B2','#059669','#D97706']
       }]
     }
-  });
-</script>
-</body>
-</html>`,
+  });`,
+				),
 			},
 			{
 				id: '2',
-				title: 'Line and Area Charts',
-				description: 'Configuring lines and filling areas beneath them.',
+				title: 'Գծային և տարածքի գծապատկերներ',
+				description: 'Ստեղծեք գծերը և Լրացրեք դրանց տակ գտնվող տարածքները:',
 				theory: `
 # Lines and Areas
 Line charts in Chart.js are heavily customizable. 
@@ -310,16 +315,9 @@ Line charts in Chart.js are heavily customizable.
 * **fill:** Set to \`true\` to fill the area under the line.
 * **borderColor vs backgroundColor:** Border is the line, background is the fill.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style> body { background: #1a1b26; color: white; } </style>
-</head>
-<body>
-<div style="width: 400px;"><canvas id="myChart"></canvas></div>
-<script>
-  Chart.defaults.color = '#fff';
+				initialCode: createChartJsLesson(
+					400,
+					`  Chart.defaults.color = '#fff';
   new Chart(document.getElementById('myChart'), {
     type: 'line',
     data: {
@@ -333,15 +331,13 @@ Line charts in Chart.js are heavily customizable.
         tension: 0.4
       }]
     }
-  });
-</script>
-</body>
-</html>`,
+  });`,
+				),
 			},
 			{
 				id: '3',
-				title: 'Pie and Doughnut',
-				description: 'Representing parts of a whole.',
+				title: 'Կլոր գծապատկեր',
+				description: 'Ներկայացնում են մեկ ամբողջության մասեր:',
 				theory: `
 # Pie & Doughnut
 These are excellent for showing proportional data.
@@ -351,16 +347,9 @@ These are excellent for showing proportional data.
 * **cutout:** Controls the thickness of the doughnut ring.
 * **hoverOffset:** Makes slices pop out when you hover over them.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style> body { background: #1a1b26; color: white; } </style>
-</head>
-<body>
-<div style="width: 350px;"><canvas id="myChart"></canvas></div>
-<script>
-  Chart.defaults.color = '#fff';
+				initialCode: createChartJsLesson(
+					350,
+					`  Chart.defaults.color = '#fff';
   new Chart(document.getElementById('myChart'), {
     type: 'doughnut',
     data: {
@@ -372,33 +361,24 @@ These are excellent for showing proportional data.
         borderWidth: 0
       }]
     }
-  });
-</script>
-</body>
-</html>`,
+  });`,
+				),
 			},
 			{
 				id: '4',
-				title: 'Mixed Charts',
-				description: 'Combining bars and lines in one canvas.',
+				title: 'Խառը գծապատկերներ',
+				description: 'Միավորել գծերն ու գծերը մեկ կանվասի վրա:',
 				theory: `
-# Mixed Charts
+# Խառը գծապատկերներ
 You aren't limited to one chart type per canvas!
 
 ### Key Concepts
 * **Dataset Types:** You can specify a \`type\` property directly on a dataset to override the main chart type.
 * **Order:** Controls which dataset draws on top. Lower numbers draw on top of higher numbers.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style> body { background: #1a1b26; color: white; } </style>
-</head>
-<body>
-<div style="width: 400px;"><canvas id="myChart"></canvas></div>
-<script>
-  Chart.defaults.color = '#fff';
+				initialCode: createChartJsLesson(
+					400,
+					`  Chart.defaults.color = '#fff';
   new Chart(document.getElementById('myChart'), {
     type: 'bar',
     data: {
@@ -420,15 +400,13 @@ You aren't limited to one chart type per canvas!
         }
       ]
     }
-  });
-</script>
-</body>
-</html>`,
+  });`,
+				),
 			},
 			{
 				id: '5',
-				title: 'Options & Customization',
-				description: 'Tuning the tooltips, legend, and layout.',
+				title: 'Հուշումների անհատականացում',
+				description: 'Անհատականացրեք գործիքի հուշումները, խորհրդանիշները և դասավորությունը:',
 				theory: `
 # Customizing Chart.js
 The \`options\` object is where the magic happens.
@@ -438,16 +416,9 @@ The \`options\` object is where the magic happens.
 * **scales:** Configure grid lines, axis display, and min/max values.
 * **responsive:** Chart.js is responsive by default, resizing to its container.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style> body { background: #1a1b26; color: white; } </style>
-</head>
-<body>
-<div style="width: 400px;"><canvas id="myChart"></canvas></div>
-<script>
-  Chart.defaults.color = '#fff';
+				initialCode: createChartJsLesson(
+					400,
+					`  Chart.defaults.color = '#fff';
   new Chart(document.getElementById('myChart'), {
     type: 'bar',
     data: {
@@ -473,10 +444,8 @@ The \`options\` object is where the magic happens.
         }
       }
     }
-  });
-</script>
-</body>
-</html>`,
+  });`,
+				),
 			},
 		],
 	},
@@ -490,9 +459,9 @@ The \`options\` object is where the magic happens.
 			{
 				id: '1',
 				title: 'Highcharts-ի Ներածություն',
-				description: 'The basics of Highcharts configuration.',
+				description: 'Highcharts-ի հիմունքները:',
 				theory: `
-# Welcome to Highcharts
+# Բարի գալուստ Highcharts
 Highcharts uses an SVG rendering engine but abstracts it behind a JSON configuration API.
 
 ### Key Concepts
@@ -500,16 +469,8 @@ Highcharts uses an SVG rendering engine but abstracts it behind a JSON configura
 * **series:** The core data array. Each object in this array is a line, bar group, etc.
 * **title & yAxis:** Built-in configuration blocks for standard chart elements.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://code.highcharts.com/highcharts.js"></script>
-  <script src="https://code.highcharts.com/themes/dark-unica.js"></script>
-</head>
-<body>
-<div id="container" style="min-width: 310px; height: 300px;"></div>
-<script>
-  Highcharts.chart('container', {
+				initialCode: createHighchartsLesson(
+					`  Highcharts.chart('container', {
     chart: { type: 'line' },
     title: { text: 'Monthly Sales' },
     xAxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] },
@@ -519,33 +480,23 @@ Highcharts uses an SVG rendering engine but abstracts it behind a JSON configura
       data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0],
       color: '#06B6D4'
     }]
-  });
-</script>
-</body>
-</html>`,
+  });`,
+				),
 			},
 			{
 				id: '2',
-				title: 'Column and Bar Charts',
-				description: 'Display categorical data effectively.',
+				title: 'Սյունակային և հիստոգրամային գծապատկերներ',
+				description: 'Արդյունավետորեն ցուցադրել կատեգորիկ տվյալները:',
 				theory: `
-# Columns and Bars
+# Սյունակներ և հիստոգրամաներ
 In Highcharts, a 'column' is vertical and a 'bar' is horizontal.
 
 ### Key Concepts
 * **chart.type:** Swap between 'column' and 'bar' easily.
 * **plotOptions:** Global settings that apply to specific chart types across all series.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://code.highcharts.com/highcharts.js"></script>
-  <script src="https://code.highcharts.com/themes/dark-unica.js"></script>
-</head>
-<body>
-<div id="container" style="min-width: 310px; height: 300px;"></div>
-<script>
-  Highcharts.chart('container', {
+				initialCode: createHighchartsLesson(
+					`  Highcharts.chart('container', {
     chart: { type: 'column' },
     title: { text: 'Server Usage' },
     xAxis: { categories: ['App', 'DB', 'Cache'] },
@@ -565,15 +516,13 @@ In Highcharts, a 'column' is vertical and a 'bar' is horizontal.
       data: [60, 40, 50],
       color: '#10B981'
     }]
-  });
-</script>
-</body>
-</html>`,
+  });`,
+				),
 			},
 			{
 				id: '3',
 				title: 'Pie and Donut Options',
-				description: 'Formatting data labels and sizing.',
+				description: 'Տվյալների պիտակների ձևավորում և չափի որոշում:',
 				theory: `
 # Pie Charts
 Highcharts handles pie charts via the series type, not the global chart type.
@@ -582,16 +531,8 @@ Highcharts handles pie charts via the series type, not the global chart type.
 * **innerSize:** Used on a pie series to convert it into a donut chart.
 * **dataLabels.format:** A string template (e.g., \`{point.name}: {point.percentage:.1f}%\`) to format labels without a complex function.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://code.highcharts.com/highcharts.js"></script>
-  <script src="https://code.highcharts.com/themes/dark-unica.js"></script>
-</head>
-<body>
-<div id="container" style="min-width: 310px; height: 300px;"></div>
-<script>
-  Highcharts.chart('container', {
+				initialCode: createHighchartsLesson(
+					`  Highcharts.chart('container', {
     chart: { type: 'pie' },
     title: { text: 'Browser Market Share' },
     plotOptions: {
@@ -613,15 +554,13 @@ Highcharts handles pie charts via the series type, not the global chart type.
         { name: 'Firefox', y: 4 }
       ]
     }]
-  });
-</script>
-</body>
-</html>`,
+  });`,
+				),
 			},
 			{
 				id: '4',
-				title: 'Area and Spline',
-				description: 'Smoothed lines and shaded areas.',
+				title: 'Տարածք և Սպլին',
+				description: 'Հարթեցված գծեր և ստվերավորված տարածքներ:',
 				theory: `
 # Area and Spline
 Use \`areaspline\` to get a smooth line with a filled area below it.
@@ -631,16 +570,8 @@ Use \`areaspline\` to get a smooth line with a filled area below it.
 * **fillOpacity:** Control how transparent the filled area is.
 * **marker:** Configure the dots on the data points.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://code.highcharts.com/highcharts.js"></script>
-  <script src="https://code.highcharts.com/themes/dark-unica.js"></script>
-</head>
-<body>
-<div id="container" style="min-width: 310px; height: 300px;"></div>
-<script>
-  Highcharts.chart('container', {
+				initialCode: createHighchartsLesson(
+					`  Highcharts.chart('container', {
     chart: { type: 'areaspline' },
     title: { text: 'Average Temperature' },
     xAxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] },
@@ -655,35 +586,24 @@ Use \`areaspline\` to get a smooth line with a filled area below it.
         lineWidth: 1
       }
     }]
-  });
-</script>
-</body>
-</html>`,
+  });`,
+				),
 			},
 			{
 				id: '5',
-				title: 'Drilldown Feature',
-				description: 'Interactive charts that expand into sub-charts.',
+				title: 'Մանրամասն գործառույթ',
+				description: 'Ինտերակտիվ գծապատկերներ, որոնք ընդլայնվում են Տեղադրված գծապատկերների մեջ:',
 				theory: `
 # Drilldown
-Highcharts has a powerful built-in drilldown module.
+Highcharts-ն ունի ներկառուցված մանրամասների հզոր մոդուլ.
 
 ### Key Concepts
 * **drilldown script:** Requires loading the \`drilldown.js\` module.
 * **drilldown property:** Connects a parent point to a child series by ID.
 * **drilldown series:** A separate array of series objects to render when a point is clicked.
         `,
-				initialCode: `<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://code.highcharts.com/highcharts.js"></script>
-  <script src="https://code.highcharts.com/modules/drilldown.js"></script>
-  <script src="https://code.highcharts.com/themes/dark-unica.js"></script>
-</head>
-<body>
-<div id="container" style="min-width: 310px; height: 300px;"></div>
-<script>
-  Highcharts.chart('container', {
+				initialCode: createHighchartsLesson(
+					`  Highcharts.chart('container', {
     chart: { type: 'column' },
     title: { text: 'Click the bars to drill down' },
     xAxis: { type: 'category' },
@@ -710,10 +630,9 @@ Highcharts has a powerful built-in drilldown module.
         }
       ]
     }
-  });
-</script>
-</body>
-</html>`,
+  });`,
+					['drilldown'],
+				),
 			},
 		],
 	},
