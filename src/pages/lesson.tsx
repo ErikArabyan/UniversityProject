@@ -9,7 +9,6 @@ import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-css';
 import ReactMarkdown from 'react-markdown';
 import { Play, RotateCcw, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 function injectPreviewErrorOverlay(documentHtml: string) {
 	const errorScript = `<script>
@@ -151,7 +150,7 @@ export default function Lesson() {
 						className='w-full py-3 px-4 rounded-xl flex items-center justify-center space-x-2 font-semibold transition-all duration-200 shadow-sm
               bg-linear-to-r from-primary to-primary/80 text-primary-foreground hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5'
 					>
-						<span>{nextLesson ? 'Next Lesson' : 'Finish Course'}</span>
+						<span>{nextLesson ? 'Հաջորդ դասը' : 'Ավարտել դասընթացը'}</span>
 						{nextLesson ? <ArrowRight className='w-5 h-5' /> : <CheckCircle2 className='w-5 h-5' />}
 					</button>
 				</div>

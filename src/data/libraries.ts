@@ -92,15 +92,15 @@ export const libraries: Library[] = [
 				title: 'SVG-ի Ներածություն',
 				description: 'Իմացեք, թե ինչպես է D3-ն աշխատում HTML SVG ֆայլերի հետ ՝ ձևեր նկարելու համար:',
 				theory: `
-# Welcome to D3.js
-D3 (Data-Driven Documents) is a powerful JavaScript library for producing dynamic, interactive data visualizations.
+# Բարի գալուստ D3.js
+D3 (Data-Driven Documents) - JavaScript-ի գրադարան է՝ դինամիկ, ինտերակտիվ տվյալների վիզուալիզացիաներ ստեղծելու համար:
 
-### Key Concepts
-* **Selections:** D3 allows you to select DOM elements easily using CSS selectors (e.g., \`d3.select("#chart")\`).
-* **SVG:** Most D3 charts are drawn using Scalable Vector Graphics.
-* **Data Binding:** D3 binds arrays of data to DOM elements.
+### Հիմնական հասկացություններ
+* **Selections:** D3-ը թույլ է տալիս հեշտությամբ ընտրել DOM տարրեր՝ օգտագործելով CSS ընտրիչներ (e.g., \`d3.select("#chart")\`).
+* **SVG:** D3 գծապատկերների մեծ մասը կազմված է մասշտաբային վեկտորային գրաֆիկայի միջոցով:
+* **Data Binding:** D3-ը կապում է տվյալների զանգվածները DOM տարրերին:
 
-Let's draw a simple bar chart. Look at the code to see how we define scales and append \`<rect>\` elements.
+* Եկեք նկարենք պարզ դիագրամ: Նայեք կոդին՝ տեսնելու համար, թե ինչպես ենք մենք սահմանում մասշտաբները և ավելացնում \`<rect>\` տարրերը:
         `,
 				initialCode: createD3Lesson(
 					400,
@@ -163,12 +163,12 @@ Let's draw a simple bar chart. Look at the code to see how we define scales and 
 				description: 'Add labeled axes to your visualizations.',
 				theory: `
 # Սանդղակներ և գծեր
-A chart isn't very useful without context. D3 provides axis generators.
+Դիագրամը շատ օգտակար չէ առանց համատեքստի: D3-ում տրամադրվում են առանցքների գեներատորներ:
 
-### Key Concepts
-* **d3.axisBottom / d3.axisLeft:** Creates axis components based on your scales.
-* **Margins:** Always leave space for axes by using a margin convention.
-* **Groups (<g>):** D3 uses SVG groups to translate (move) whole sections of elements at once.
+### Հիմնական հասկացություններ
+* **d3.axisBottom / d3.axisLeft:** Ստեղծում է առանցքի բաղադրիչներ՝ հիմնվելով ձեր մասշտաբների վրա:
+* **Margins:** Միշտ տեղ թողեք առանցքների համար՝ օգտագործելով margin հրամանը:
+* **Groups (<g>):** D3-ն օգտագործում է SVG խմբեր՝ միաժամանակ թարգմանելու (տեղափոխելու) տարրերի ամբողջ բաժինները:
         `,
 				initialCode: createD3Lesson(
 					450,
@@ -211,15 +211,14 @@ A chart isn't very useful without context. D3 provides axis generators.
 			{
 				id: '3',
 				title: 'Գծապատկերներ և ուրվագծեր',
-				description: 'Learn how to draw lines using d3.line()',
+				description: 'Իմացեք, թե ինչպես գծեր գծել d3․line()-ով',
 				theory: `
 # գծապատկերներ և ուրվագծեր
-Line charts show continuity. In SVG, lines are drawn using the \`<path>\` element.
+Գծապատկերները ցույց են տալիս շարունակականությունը: SVG-ում գծերը գծվում են <path>տարրի միջոցով:
 
-### Key Concepts
-* **d3.line():** A generator that turns an array of points into a string of SVG path commands.
-* **Path 'd' attribute:** The instructions for drawing the path.
-* **Fill & Stroke:** For lines, we typically set \`fill: none\` and \`stroke\` to a color.
+### Հիմնական հասկացություններ
+* **d3.line():** d3.line()-ը գեներատոր է, որը կետերի զանգվածը վերածում է SVG path հրամանի:
+* **Fill & Stroke:** Գծերի համար մենք սովորաբար սահմանում ենք \`fill: none\` և գույների համար \`stroke\`։
         `,
 				initialCode: createD3Lesson(
 					400,
@@ -278,13 +277,13 @@ Line charts show continuity. In SVG, lines are drawn using the \`<path>\` elemen
 				title: 'Անցումներ և անիմացիաներ',
 				description: 'Գեղեցկացրեք ձեր գրաֆիկները շարժման միջոցով:',
 				theory: `
-# Animations
-D3 makes transitions incredibly easy.
+# Անիմացիաներ
+D3-ը անցումներն աներևակայելի պարզ է դարձնում:
 
-### Key Concepts
-* **.transition():** Tells D3 you want to animate the next attributes.
-* **.duration():** How long the animation lasts in milliseconds.
-* **.delay():** Pause before starting.
+### Հիմնական հասկացություններ
+* **.transition():** Նշեք, որ ցանկանում եք կենդանացնել հետևյալ հատկանիշները:
+* **.duration():** սահմանեք անիմացիայի տևողությունը միլիվայրկյաններով:
+* **.delay():** սահմանեք դադար սկսելուց առաջ:
         `,
 				initialCode: createD3Lesson(
 					400,
@@ -343,13 +342,13 @@ D3 makes transitions incredibly easy.
 				title: 'Կետային գծապատկերներ',
 				description: 'Կիրառեք կետերը X/Y հարթության վրա՝ փոխկապակցվածությունը ցույց տալու համար:',
 				theory: `
-# Scatter Plots
-Scatter plots use SVG \`<circle>\` elements instead of rects or paths.
+# Կետային գծագրեր
+Կետային գծագրերում ուղիղ գծերի կամ ուրվագծերի փոխարեն օգտագործվում են SVG <circles > տարրեր:
 
-### Key Concepts
-* **cx & cy:** The center coordinates of the circle.
-* **r:** The radius of the circle.
-* **opacity:** Useful when circles overlap.
+### Հիմնական հասկացություններ
+* **cx & cy:** Շրջանագծի կենտրոնի կոորդինատները:
+* **r:** սահմանեք շրջանագծի շառավիղը:
+* **opacity:** պետք է, երբ շրջանակները համընկնում են: որպիսի դարձնել թափանցիկ։
         `,
 				initialCode: createD3Lesson(
 					400,
@@ -408,13 +407,13 @@ Scatter plots use SVG \`<circle>\` elements instead of rects or paths.
 				title: 'Սկսել Chart.js-ից',
 				description: 'Ստեղծեք ձեր առաջին գրաֆիկը հաշված րոպեների ընթացքում:',
 				theory: `
-# Welcome to Chart.js
-Chart.js is a fantastic canvas-based library. It's incredibly easy to set up.
+# Բարի գալուստ Chart.js
+Chart.js ֆանտաստիկ canvas-ի վրա հիմնված գրադարան է: Այն աներևակայելի հեշտ է կարգավորել:
 
-### Key Concepts
-* **Canvas:** Chart.js renders into an HTML \`<canvas>\` element, not SVG.
-* **Config Object:** Everything is defined in a single configuration object passed to \`new Chart()\`.
-* **Type:** Defines the chart style (bar, line, pie, etc).
+### Հիմնական հասկացություններ
+* **Canvas:** Chart.js-ն արտացոլվում է "<canvas>" HTML տարրի մեջ, այլ ոչ թե SVG-ով:
+* **Config Object:** Ամեն ինչ սահմանվում է մեկ կազմաձևման օբյեկտում, որը փոխանցվում է \`new Chart()\`-ին:
+* **Type:** Որոշել գծապատկերի ոճը (bar, line, pie,  և այլն):
         `,
 				initialCode: createChartJsLesson(
 					400,
@@ -440,13 +439,13 @@ Chart.js is a fantastic canvas-based library. It's incredibly easy to set up.
 				title: 'Գծային և տարածքի գծապատկերներ',
 				description: 'Ստեղծեք գծերը և Լրացրեք դրանց տակ գտնվող տարածքները:',
 				theory: `
-# Lines and Areas
-Line charts in Chart.js are heavily customizable. 
+# Գծեր և տարածքներ
+Գծապատկերները Chart․js-ում շատ հարմարեցված են: 
 
-### Key Concepts
-* **tension:** Curves the line. \`0\` is straight, \`0.4\` is smooth.
-* **fill:** Set to \`true\` to fill the area under the line.
-* **borderColor vs backgroundColor:** Border is the line, background is the fill.
+### Հիմնական հասկացություններ
+* **tension:** Curve-ով ծռեք գիծը ։  "0" - ուղիղ, "0.4" - սահուն:
+* **fill:** փոխանցեք "true" որպեսզի ներկելի գծի տակի հատվածը:
+* **borderColor vs backgroundColor:** Border-ը գիծն է, background-ը՝ ֆոնը:
         `,
 				initialCode: createChartJsLesson(
 					400,
@@ -472,13 +471,13 @@ Line charts in Chart.js are heavily customizable.
 				title: 'Կլոր գծապատկեր',
 				description: 'Ներկայացնում են մեկ ամբողջության մասեր:',
 				theory: `
-# Pie & Doughnut
-These are excellent for showing proportional data.
+# շրջանաձև պոնչիկ գծապատկեր
+Դրանք հիանալի են համամասնական տվյալները ցուցադրելու համար:
 
-### Key Concepts
-* **type: 'doughnut':** Creates a chart with a hole in the middle.
-* **cutout:** Controls the thickness of the doughnut ring.
-* **hoverOffset:** Makes slices pop out when you hover over them.
+### Հիմնական հասկացություններ
+* **type: 'doughnut':** ստեղծում է կլոր գծապատկեր մեջտեղում անցքով։
+* **cutout:** կառավարում է գծապատկերի հաստությունը։
+* **hoverOffset:** հատվածը ընդգծում է, երբ պահում եք մկնիկը վրան։
         `,
 				initialCode: createChartJsLesson(
 					350,
@@ -491,7 +490,8 @@ These are excellent for showing proportional data.
         data: [55, 35, 10],
         backgroundColor: ['#6366F1', '#EC4899', '#14B8A6'],
         hoverOffset: 10,
-        borderWidth: 0
+        borderWidth: 0,
+        cutout: 100
       }]
     }
   });`,
@@ -503,11 +503,11 @@ These are excellent for showing proportional data.
 				description: 'Միավորել գծերն ու գծերը մեկ կանվասի վրա:',
 				theory: `
 # Խառը գծապատկերներ
-You aren't limited to one chart type per canvas!
+Դուք չեք սահմանափակված կտավի վրա գծապատկերի մեկ տեսակով:
 
-### Key Concepts
-* **Dataset Types:** You can specify a \`type\` property directly on a dataset to override the main chart type.
-* **Order:** Controls which dataset draws on top. Lower numbers draw on top of higher numbers.
+### Հիմնական հասկացություններ
+* **Dataset Types:** Դուք կարող եք նշել \`type\` հատկությունը հիմնական գծապատկերի տեսակը փոխելու համար:
+* **Order:** Որոշում է, թե որ տվյալների հավաքածուն է ցուցադրվում վերևում: Ավելի փոքր թվերը ցուցադրվում են ավելի մեծ թվերի վրա:
         `,
 				initialCode: createChartJsLesson(
 					400,
@@ -529,7 +529,8 @@ You aren't limited to one chart type per canvas!
           type: 'bar',
           label: 'Actual',
           data: [35, 48, 42, 65],
-          backgroundColor: '#3B82F6'
+          backgroundColor: '#3B82F6',
+          order: -1
         }
       ]
     }
@@ -541,13 +542,13 @@ You aren't limited to one chart type per canvas!
 				title: 'Հուշումների անհատականացում',
 				description: 'Անհատականացրեք գործիքի հուշումները, խորհրդանիշները և դասավորությունը:',
 				theory: `
-# Customizing Chart.js
-The \`options\` object is where the magic happens.
+# Chart.js-ի Կարգավորում
+\`options\`օբյեկտը այն վայրն է, որտեղ տեղի են ունենում հրաշքներ:
 
-### Key Concepts
-* **plugins:** Configure the legend, tooltips, and title.
-* **scales:** Configure grid lines, axis display, and min/max values.
-* **responsive:** Chart.js is responsive by default, resizing to its container.
+### Հիմնական հասկացություններ
+* **plugins:** փոփոխեք մանրամասները, և վերնագիրը.
+* **scales:** Կարգավորեք ցանցի գծերը, առանցքների ցուցադրումը և նվազագույն / առավելագույն արժեքները:
+* **responsive:** Chart.js-ը ավտոմատ չափափոխվում է՝ համապատասխանելով իր կոնտեյներին:
         `,
 				initialCode: createChartJsLesson(
 					400,
@@ -597,19 +598,19 @@ The \`options\` object is where the magic happens.
 # Բարի գալուստ Highcharts
 Highcharts uses an SVG rendering engine but abstracts it behind a JSON configuration API.
 
-### Key Concepts
-* **Highcharts.chart():** The initializer function taking a container ID and a configuration object.
-* **series:** The core data array. Each object in this array is a line, bar group, etc.
-* **title & yAxis:** Built-in configuration blocks for standard chart elements.
+### Հիմնական հասկացություններ
+* **Highcharts.chart():** ինիցիալիզացնող ֆունկցիան ընդունում է կոնտեյների id-ն և կոնֆիգուրացվող օբյեկտը։
+* **series:** Հիմնական զանգվածային տվյալները։ Յուրաքանչյուր օբյեկտ, այդ զանգվածում ներկայացնում է մի գիծ, մի խումբ սյուներ և այլն:
+* **title & yAxis:** Ներկառուցված կոնֆիգուրացվող օպցիաներ ստանդարտ գծապատկերների համար։
         `,
 				initialCode: createHighchartsLesson(
 					`  Highcharts.chart('container', {
     chart: { type: 'line' },
-    title: { text: 'Monthly Sales' },
-    xAxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] },
-    yAxis: { title: { text: 'Units sold' } },
+    title: { text: 'Ամսական վաճառք' },
+    xAxis: { categories: ["Հունվար", "Փետրվար", "Մարտ", "Ապրիլ", "Մայիս", "Հունիս"] },
+    yAxis: { title: { text: 'Վաճառված չափման միավորներ' } },
     series: [{ 
-      name: 'Sales', 
+      name: 'Վաճառքներ', 
       data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0],
       color: '#06B6D4'
     }]
@@ -622,18 +623,18 @@ Highcharts uses an SVG rendering engine but abstracts it behind a JSON configura
 				description: 'Արդյունավետորեն ցուցադրել կատեգորիկ տվյալները:',
 				theory: `
 # Սյունակներ և հիստոգրամաներ
-In Highcharts, a 'column' is vertical and a 'bar' is horizontal.
+Highcharts - ում column-ը ուղղահայաց է, իսկ bar-ը հորիզոնական:
 
-### Key Concepts
-* **chart.type:** Swap between 'column' and 'bar' easily.
-* **plotOptions:** Global settings that apply to specific chart types across all series.
+### Հիմնական հասկացություններ
+* **chart.type:** Հեշտությամբ փոխեք column-ի և bar-ի միջև:
+* **plotOptions:** Գլոբալ պարամետրեր, որոնք կիրառվում են բոլոր շարքերում գծապատկերների որոշակի տեսակների վրա:
         `,
 				initialCode: createHighchartsLesson(
 					`  Highcharts.chart('container', {
     chart: { type: 'column' },
-    title: { text: 'Server Usage' },
-    xAxis: { categories: ['App', 'DB', 'Cache'] },
-    yAxis: { min: 0, title: { text: 'CPU %' } },
+    title: { text: 'Սերվերի օգտագործումը' },
+    xAxis: { categories: ["ծրագիր", "Տվյալների Բազա", "քեշ"] },
+    yAxis: { min: 0, title: { text: 'Պրոցեսոր %' } },
     plotOptions: {
       column: {
         borderRadius: 4,
@@ -641,11 +642,11 @@ In Highcharts, a 'column' is vertical and a 'bar' is horizontal.
       }
     },
     series: [{
-      name: 'Server 1',
+      name: 'Սերվեր 1',
       data: [45, 80, 20],
       color: '#8B5CF6'
     }, {
-      name: 'Server 2',
+      name: 'Սերվեր 2',
       data: [60, 40, 50],
       color: '#10B981'
     }]
@@ -657,17 +658,17 @@ In Highcharts, a 'column' is vertical and a 'bar' is horizontal.
 				title: 'Pie and Donut Options',
 				description: 'Տվյալների պիտակների ձևավորում և չափի որոշում:',
 				theory: `
-# Pie Charts
-Highcharts handles pie charts via the series type, not the global chart type.
+# Կարկանդակի տեսքով գծապատկերներ
+Highcharts-ը կարկանդակի գծապատկերները մշակում է սերիայի տիպի, այլ ոչ թե գլոբալ աղյուսակի տիպի միջոցով:
 
-### Key Concepts
-* **innerSize:** Used on a pie series to convert it into a donut chart.
-* **dataLabels.format:** A string template (e.g., \`{point.name}: {point.percentage:.1f}%\`) to format labels without a complex function.
+### Հիմնական հասկացություններ
+* **innerSize:** Օգտագործվում է կարկանդակի աղյուսակում ՝ Այն բլիթների աղյուսակի վերածելու համար:
+* **dataLabels.format:** Լարային ձևանմուշ (օրինակ՝ \'{point.name}: {point.percentage:.1f}%\`) պիտակների ձևաչափման համար՝ առանց բարդ գործառույթ օգտագործելու:
         `,
 				initialCode: createHighchartsLesson(
 					`  Highcharts.chart('container', {
     chart: { type: 'pie' },
-    title: { text: 'Browser Market Share' },
+    title: { text: 'Բրաուզերների շուկայի մասնաբաժինները' },
     plotOptions: {
       pie: {
         innerSize: '50%',
@@ -692,22 +693,22 @@ Highcharts handles pie charts via the series type, not the global chart type.
 			},
 			{
 				id: '4',
-				title: 'Տարածք և Սպլին',
+				title: 'Տարածք և կորագիծ',
 				description: 'Հարթեցված գծեր և ստվերավորված տարածքներ:',
 				theory: `
-# Area and Spline
-Use \`areaspline\` to get a smooth line with a filled area below it.
+# Տարածք և կորագիծ
+Օգտագործեք areaspline՝ հարթ գիծ ստանալու համար, որի տակ ներկվածս տարածք կա:
 
-### Key Concepts
-* **type: 'areaspline':** Combines a spline (curved line) with an area fill.
-* **fillOpacity:** Control how transparent the filled area is.
-* **marker:** Configure the dots on the data points.
+### Հիմնական հասկացություններ
+* **type: 'areaspline':** Համատեղում է spline (կոր գիծ) Տարածքի լրացման հետ:
+* **fillOpacity:** Որոշում է ողողված տարածքի թափանցիկությունը:
+* **marker:** Կարգավորում է կետերի դասավորությունը տվյալների կետերում:
         `,
 				initialCode: createHighchartsLesson(
 					`  Highcharts.chart('container', {
     chart: { type: 'areaspline' },
-    title: { text: 'Average Temperature' },
-    xAxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] },
+    title: { text: "Միջին ջերմաստիճանը" },
+    xAxis: { categories: ["Հունվար", "Փետրվար", "Մարտ", "Ապրիլ", "Մայիս", "Հունիս"] },
     series: [{
       name: 'Temp',
       data: [3, 4, 8, 12, 16, 20],
@@ -730,15 +731,15 @@ Use \`areaspline\` to get a smooth line with a filled area below it.
 # Drilldown
 Highcharts-ն ունի ներկառուցված մանրամասների հզոր մոդուլ.
 
-### Key Concepts
-* **drilldown script:** Requires loading the \`drilldown.js\` module.
-* **drilldown property:** Connects a parent point to a child series by ID.
-* **drilldown series:** A separate array of series objects to render when a point is clicked.
+### Հիմնական հասկացություններ
+* **drilldown script:** Պահանջվում է բեռնել\`drilldown.js\` մոդուլը։
+* **drilldown property:** Կապում է ծնող օբյեկտը երեխա օբյեկտի հետ, ըստ id-ի:
+* **drilldown series:** Մի կետի վրա սեղմելիս ցուցադրվող շարքի օբյեկտների առանձին զանգված:
         `,
 				initialCode: createHighchartsLesson(
 					`  Highcharts.chart('container', {
     chart: { type: 'column' },
-    title: { text: 'Click the bars to drill down' },
+    title: { text: 'սեխմեք սյունակներին՝ մանրամասները տեսնելու համար' },
     xAxis: { type: 'category' },
     series: [
       {
