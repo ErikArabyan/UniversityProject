@@ -2,8 +2,205 @@ import { useParams, Link } from 'wouter';
 import { getLibrary } from '@/data/libraries';
 import { useProgress } from '@/hooks/use-progress';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Play, BookOpen, ArrowLeft } from 'lucide-react';
+import { CheckCircle2, Play, BookOpen, ArrowLeft, ChevronDown, Terminal } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+
+type LibraryCodeStep = {
+	title: string;
+	explanation: string;
+	code: string;
+};
+
+type LibraryGuide = {
+	summary: string;
+	steps: LibraryCodeStep[];
+};
+
+const libraryGuides: Record<string, LibraryGuide> = {
+	highcharts: {
+		summary: 'Դուք միացնում եք Highcharts գրադարանը, ստեղծում եք կոնտեյներ և նկարագրում եք գրաֆիկը կարգավորումների օբյեկտի կողմից:',
+		steps: [
+			{
+				title: 'Միացնում ենք գրադարանը',
+				explanation: 'Այս script-ը ավելացնում է Highcharts գլոբալ օբյեկտ, որի միջոցով ստեղծվում են բոլոր գրաֆիկները:',
+				code: `<script src="https://cdn.jsdelivr.net/npm/highcharts/highcharts.js"></script>`,
+			},
+			{
+				title: 'Ստեղծում ենք կոնտեյներ',
+				explanation: 'Highcharts-ին անհրաժեշտ է սովորական HTML տարր: Դրա մեջ գրադարանը կտեղադրի պատրաստի SVG գրաֆիկը:',
+				code: `<div id="container"></div>`,
+			},
+			{
+				title: 'Ինչպես կիրառել',
+				explanation: 'Առաջին արգումենտը կոնտեյների id-ն է, երկրորդը՝ գրաֆիկի պարամետրերով օբյեկտ:',
+				code: `Highcharts.chart('container', {
+	// գրաֆիկի կարգավորումներ
+});`,
+			},
+			{
+				title: 'Սահմանեք տեսակը և վերնագիրը',
+				explanation: 'chart.type-ը սահմանում է գրաֆիկի տեսակը, իսկ title.text-ը վերևից ցույց է տալիս վերնագիրը:',
+				code: `chart: { type: 'line' },
+title: { text: 'Sales by month' },`,
+			},
+			{
+				title: 'Կարգավորում ենք առանցքները',
+				explanation: 'xAxis-ը սահմանում է հորիզոնական տվյալները, yAxis-ը բացատրում է, թե ինչ արժեքներ են ցուցադրվում ուղղահայաց սահմանները:',
+				code: `xAxis: { categories: ['Jan', 'Feb', 'Mar'] },
+yAxis: { title: { text: 'Sales' } },`,
+			},
+			{
+				title: 'Փոխանցում ենք տվյալները',
+				explanation: 'series-ը տվյալների հավաքածուների զանգված է: Յուրաքանչյուր օբյեկտ դառնում է առանձին տող, սյունակ կամ Հատված:',
+				code: `series: [{
+  name: 'Sales',
+  data: [12, 19, 7]
+}]`,
+			},
+		],
+	},
+	chartjs: {
+		summary: 'Chart.js-ը գծապատկերներ է կառուցում canvas-ի վրա: Դուք ստեղծում եք canvas, ընտրում եք տեսակը, փոխանցում տվյալները և անհրաժեշտության դեպքում ավելացնում ընտրանքներ:',
+		steps: [
+			{
+				title: 'Միացնում ենք Chart.js-ը',
+				explanation: 'CDN ֆայլը ավելացնում է Chart class-ը, որի միջոցով ստեղծվում է նոր գրաֆիկ:',
+				code: `<script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>`,
+			},
+			{
+				title: 'Ավելացնում ենք canvas',
+				explanation: 'Chart.js-ը նկարում է canvas-ի ներսում, ուստի այս տարրը գրաֆիկի տեղն է:',
+				code: `<canvas id="myChart"></canvas>`,
+			},
+			{
+				title: 'վերցնում ենք canvas-ը DOM-ից։',
+				explanation: 'Տարրի հղումը փոխանցվում է գրադարանին, որպեսզի այն իմանա որտեղ պետք է նկարել գրաֆիկը։',
+				code: `const ctx = document.getElementById('myChart');`,
+			},
+			{
+				title: 'Ստեղծում ենք գրաֆիկ և ընտրում ենք տեսակը',
+				explanation: 'type определяет форму визуализации: bar, line, pie, doughnut и другие.',
+				code: `new Chart(ctx, {
+  type: 'bar',
+});`,
+			},
+			{
+				title: 'Նկարագրում ենք գրաֆիկի նշանակությունը',
+				explanation: 'labels-ը ինֆորմացիան է առանցքի վրա, datasets-ը մեկ կամ մի քանի թվեր են ցուցադրելու համար:',
+				code: `data: {
+  labels: ['Jan', 'Feb', 'Mar'],
+  datasets: [{
+    label: 'Sales',
+    data: [12, 19, 7]
+  }]
+},`,
+			},
+			{
+				title: 'Ավելացնում ենք կարգավորումներ',
+				explanation: 'options-ը կառավարում է չափսերը, հուշումները, tooltip-ը, առանցքները, ցանցը և այլ դետալներ:',
+				code: `options: {
+  responsive: true,
+  plugins: {
+    legend: { position: 'bottom' }
+  }
+}`,
+			},
+		],
+	},
+	d3js: {
+		summary: 'D3.js-ը գրաֆիկ ստեղծելու համար օգտագործում է SVG-ներ։',
+		steps: [
+			{
+				title: 'միացնում ենք D3.js-ը',
+				explanation: 'Այս սկրիպտը ավելացնում է D3 օբյեկտը իր ֆունկցիաներով՝ տարրեր, մասշտաբներ, առանցքներ ընտրելու և տվյալների հետ աշխատելու համար:',
+				code: `<script src="https://d3js.org/d3.v7.min.js"></script>`,
+			},
+			{
+				title: 'Ստեղծել SVG',
+				explanation: 'Քանի որ D3-ը նկարում է SVG-ում, պետք է ստեղծել svg կոնտեյներ նրա մեջ գրաֆիկը նկարելու համար և տալ նրան id ատրիբուտ։',
+				code: `<svg id="chart" width="400" height="260"></svg>`,
+			},
+			{
+				title: 'Ընտրում ենք SVG տարրը',
+				explanation: 'd3.select գտնում է տարրը էջում: Դրանից հետո Դրան կարող եք գրաֆիկներ տալ:',
+				code: `const svg = d3.select('#chart');`,
+			},
+			{
+				title: 'Տալիս ենք տվյալներ և Չափեր',
+				explanation: 'data զանգվածը գրաֆիկի աղբյուրն է: Չափերը անհրաժեշտ են տարրերի դիրքը ճիշտ հաշվարկելու համար:',
+				code: `const data = [20, 60, 90];
+const width = 400;
+const height = 260;`,
+			},
+			{
+				title: 'Ստեղծեք սանդղակ',
+				explanation: 'Սանդղակը տվյալների իրական արժեքները վերածում է պիքսելների, որպեսզի թվերը դառնան լայնություն կամ կոորդինատներ:',
+				code: `const xScale = d3.scaleLinear()
+  .domain([0, d3.max(data)])
+  .range([0, width - 80]);`,
+			},
+			{
+				title: 'Տվյալները կապում ենք պատկերների հետ',
+				explanation: 'data-ի տվյալները կապում ենք գրաֆիկին, enter-ը ստեղծում է բացակայող rect-ը, append-ը դրանք ավելացնում է SVG-ին:',
+				code: `svg.selectAll('rect')
+  .data(data)
+  .enter()
+  .append('rect')
+  .attr('x', 40)
+  .attr('y', (d, i) => i * 36 + 24)
+  .attr('width', (d) => xScale(d))
+  .attr('height', 24);`,
+			},
+			{
+				title: 'Ավելացնել առանցք',
+				explanation: 'axisBottom-ը ստեղծում է մասշտաբի տվյալները, իսկ call-ը պատրաստի առանցքը կիրառում է G խմբի վրա:',
+				code: `const axis = d3.axisBottom(xScale);
+
+svg.append('g')
+  .attr('transform', 'translate(40, 140)')
+  .call(axis);`,
+			},
+		],
+	},
+};
+
+function LibraryGuideDropdown({ guide }: { guide: LibraryGuide }) {
+	return (
+		<details className='group mb-12 overflow-hidden rounded-2xl border border-border bg-card shadow-sm'>
+			<summary className='flex cursor-pointer list-none items-center justify-between gap-4 p-5 transition-colors hover:bg-secondary/30 [&::-webkit-details-marker]:hidden'>
+				<div className='flex items-start gap-3'>
+					<div className='mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary'>
+						<Terminal className='h-5 w-5' />
+					</div>
+					<div>
+						<h2 className='text-xl font-bold tracking-tight'>Օգտագործման հիմնական կետերը</h2>
+						<p className='mt-1 text-sm leading-relaxed text-muted-foreground'>{guide.summary}</p>
+					</div>
+				</div>
+				<ChevronDown className='h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180' />
+			</summary>
+
+			<div className='border-t border-border p-5 md:p-6'>
+				<ol className='space-y-5'>
+					{guide.steps.map((step, index) => (
+						<li key={step.title} className='rounded-xl border border-border bg-background/40 p-4'>
+							<div className='mb-3 flex gap-3'>
+								<span className='flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary'>{index + 1}</span>
+								<div>
+									<h3 className='font-semibold tracking-tight'>{step.title}</h3>
+									<p className='mt-1 text-sm leading-relaxed text-muted-foreground'>{step.explanation}</p>
+								</div>
+							</div>
+							<pre className='overflow-x-auto rounded-xl border border-border bg-background p-4 text-sm text-foreground'>
+								<code>{step.code}</code>
+							</pre>
+						</li>
+					))}
+				</ol>
+			</div>
+		</details>
+	);
+}
 
 export default function LibraryOverview() {
 	const { id } = useParams<'/library/:id'>();
@@ -17,6 +214,7 @@ export default function LibraryOverview() {
 	const progress = getLibraryProgress(library.id, library.lessons.length);
 	const nextLessonIdx = library.lessons.findIndex((l) => !isCompleted(library.id, l.id));
 	const nextLesson = nextLessonIdx >= 0 ? library.lessons[nextLessonIdx] : null;
+	const guide = libraryGuides[library.id];
 
 	const container = {
 		hidden: { opacity: 0 },
@@ -72,6 +270,8 @@ export default function LibraryOverview() {
 					</div>
 				</div>
 			</div>
+
+			{guide ? <LibraryGuideDropdown guide={guide} /> : null}
 
 			<div className='space-y-6'>
 				<h2 className='text-2xl font-bold tracking-tight'>Ուսումնական պլան</h2>

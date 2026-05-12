@@ -51,14 +51,14 @@ export function Sidebar() {
 		<>
 			<header className='relative z-40 shrink-0 border-b border-border bg-background/90 backdrop-blur supports-backdrop-filter:bg-background/75'>
 				<div className='mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4 sm:px-6 lg:px-8'>
-					<div className='flex min-w-0 items-center gap-3'>
+					<a className='flex min-w-0 items-center gap-3' href='/'>
 						<div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/15 ring-1 ring-primary/20'>
 							<img src='/favicon.svg' alt='' />
 						</div>
 						<div className='min-w-0'>
 							<div className='truncate font-semibold tracking-tight text-foreground'>Chart Academy</div>
 						</div>
-					</div>
+					</a>
 
 					<div className='flex items-center gap-3'>
 						<div className='hidden max-w-72 truncate rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground sm:block'>{currentLabel}</div>
