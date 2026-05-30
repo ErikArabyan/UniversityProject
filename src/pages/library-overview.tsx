@@ -2,7 +2,7 @@ import { useParams, Link } from 'wouter';
 import { getLibrary } from '@/data/libraries';
 import { useProgress } from '@/hooks/use-progress';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Play, BookOpen, ArrowLeft, ChevronDown, Terminal } from 'lucide-react';
+import { CheckCircle2, Play, BookOpen, ArrowLeft, ChevronDown, Terminal, Video } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
 type LibraryCodeStep = {
@@ -14,6 +14,26 @@ type LibraryCodeStep = {
 type LibraryGuide = {
 	summary: string;
 	steps: LibraryCodeStep[];
+};
+
+type LibraryVideo = {
+	title: string;
+	src: string;
+};
+
+const libraryVideos: Record<string, LibraryVideo> = {
+	d3js: {
+		title: 'D3.js ուսուցողական տեսանյութ',
+		src: 'lessons/D3js.mp4',
+	},
+	chartjs: {
+		title: 'Chart.js ուսուցողական տեսանյութ',
+		src: 'lessons/chartjs.mp4',
+	},
+	highcharts: {
+		title: 'Highcharts ուսուցողական տեսանյութ',
+		src: 'lessons/highcharts.mp4',
+	},
 };
 
 const libraryGuides: Record<string, LibraryGuide> = {
@@ -164,6 +184,36 @@ svg.append('g')
 	},
 };
 
+function getPublicAssetPath(assetPath: string) {
+	const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+
+	return `${baseUrl}${assetPath.replace(/^\/+/, '')}`;
+}
+
+function LibraryVideoBlock({ libraryName, video }: { libraryName: string; video: LibraryVideo }) {
+	return (
+		<section className='mb-12 overflow-hidden rounded-3xl border border-border bg-card shadow-sm'>
+			<div className='flex items-center gap-3 border-b border-border p-5 md:p-6'>
+				<div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary'>
+					<Video className='h-5 w-5' />
+				</div>
+				<div className='min-w-0'>
+					<p className='text-xs font-semibold uppercase text-primary'>Տեսանյութ</p>
+					<h2 className='mt-1 truncate text-2xl font-bold'>{video.title}</h2>
+				</div>
+			</div>
+
+			<div className='bg-background p-3 md:p-4'>
+				<div className='aspect-video overflow-hidden rounded-2xl border border-border bg-black'>
+					<video className='h-full w-full object-contain' controls preload='metadata' playsInline aria-label={`${libraryName} ուսուցողական տեսանյութ`}>
+						<source src={getPublicAssetPath(video.src)} type='video/mp4' />
+					</video>
+				</div>
+			</div>
+		</section>
+	);
+}
+
 function LibraryGuideDropdown({ guide }: { guide: LibraryGuide }) {
 	return (
 		<details className='group mb-12 overflow-hidden rounded-2xl border border-border bg-card shadow-sm'>
@@ -215,6 +265,7 @@ export default function LibraryOverview() {
 	const nextLessonIdx = library.lessons.findIndex((l) => !isCompleted(library.id, l.id));
 	const nextLesson = nextLessonIdx >= 0 ? library.lessons[nextLessonIdx] : null;
 	const guide = libraryGuides[library.id];
+	const video = libraryVideos[library.id];
 
 	const container = {
 		hidden: { opacity: 0 },
@@ -270,6 +321,8 @@ export default function LibraryOverview() {
 					</div>
 				</div>
 			</div>
+
+			{video ? <LibraryVideoBlock libraryName={library.name} video={video} /> : null}
 
 			{guide ? <LibraryGuideDropdown guide={guide} /> : null}
 

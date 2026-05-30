@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const port = 4050;
+const port = 4000;
 const basePath = '/';
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 
